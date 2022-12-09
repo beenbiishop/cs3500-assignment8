@@ -1,0 +1,8 @@
+load ExampleImage2.png example2
+
+blur example2 example2-blur
+
+sepia example2 example2-sepia
+
+save script-example2-blur.png example2-blur
+save script-example2-sepia.bmp example2-sepia

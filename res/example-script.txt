@@ -1,0 +1,45 @@
+load ExampleImage.ppm example
+load ExampleImage2.png example2
+
+brighten 50 example example-bright
+darken 50 example example-dark
+
+horizontal-flip example example-horizontal
+vertical-flip example example-vertical
+vertical-flip example-horizontal example-horizontal-vertical
+
+visualize-red example example-red
+visualize-green example example-green
+visualize-blue example example-blue
+visualize-value example example-value
+visualize-intensity example example-intensity
+visualize-luma example example-luma
+
+blur example2 example2-blur
+blur example2-blur example2-blur-blur
+
+sharpen example2 example2-sharp
+sharpen example2-sharp example2-sharp-sharp
+
+greyscale example2 example2-grey
+sepia example2 example2-sepia
+
+save script-example-bright.ppm example-bright
+save script-example-dark.ppm example-dark
+save script-example-horizontal.ppm example-horizontal
+save script-example-vertical.ppm example-vertical
+save script-example-horizontal-vertical.ppm example-horizontal-vertical
+save script-example-red.ppm example-red
+save script-example-green.ppm example-green
+save script-example-blue.ppm example-blue
+save script-example-value.ppm example-value
+save script-example-intensity.ppm example-intensity
+save script-example-luma.ppm example-luma
+save script-example2-blur.png example2-blur
+save script-example2-blur-blur.png example2-blur-blur
+save script-example2-sharp.jpg example2-sharp
+save script-example2-sharp-sharp.jpeg example2-sharp-sharp
+save script-example2-grey.bmp example2-grey
+save script-example2-sepia.bmp example2-sepia
+
+quit
