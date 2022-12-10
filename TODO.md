@@ -23,3 +23,4 @@
 2. [ ] Rebuild class diagram
 3. [ ] Fix flip transformations
 4. [x] Implement mosaic
+5. [ ] Add mosaic to documentation
