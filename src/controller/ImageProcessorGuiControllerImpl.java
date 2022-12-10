@@ -5,6 +5,7 @@ import controller.commands.FilterCmd;
 import controller.commands.FilterCmd.FilterType;
 import controller.commands.HorizontalFlipCmd;
 import controller.commands.LoadCmd;
+import controller.commands.MosaicCmd;
 import controller.commands.SaveCmd;
 import controller.commands.VerticalFlipCmd;
 import controller.commands.VisualizeCmd;
@@ -139,6 +140,10 @@ public class ImageProcessorGuiControllerImpl implements ImageProcessorGuiControl
       questions.add("Enter the amount to brighten/darken by:");
     }
 
+    if (command.equals("Mosaic")) {
+      questions.add("Enter the number of seeds to use:");
+    }
+
     answers = this.view.renderInput(questions, null);
     if (answers == null || answers.length == 0) {
       this.view.renderMessage(command + " cancelled.");
@@ -152,17 +157,23 @@ public class ImageProcessorGuiControllerImpl implements ImageProcessorGuiControl
       }
     } else if (answers.length == 2) {
       if (answers[0].length() == 0 || answers[1].length() == 0) {
-        this.view.renderDialog(DialogType.Danger, "Image name and amount cannot be empty.");
+        this.view.renderDialog(DialogType.Danger, "Must answer all form fields.");
         return;
       } else {
+        String numLabel;
+        if (command.equals("Brighten") || command.equals("Darken")) {
+          numLabel = "Amount";
+        } else {
+          numLabel = "Number of seeds";
+        }
         try {
           Integer.parseInt(answers[1]);
           if (Integer.parseInt(answers[1]) < 0) {
-            this.view.renderDialog(DialogType.Danger, "Amount must be a positive number.");
+            this.view.renderDialog(DialogType.Danger, numLabel + " must be positive.");
             return;
           }
         } catch (NumberFormatException e) {
-          this.view.renderDialog(DialogType.Danger, "Amount must be a positive number.");
+          this.view.renderDialog(DialogType.Danger, numLabel + " must be positive.");
           return;
         }
         args[1] = answers[0];
@@ -189,6 +200,7 @@ public class ImageProcessorGuiControllerImpl implements ImageProcessorGuiControl
    * Defines the transformations that can be applied to an image supported by this controller.
    */
   private void addTransformations() {
+    // Add transformations to the map
     this.transformations.put("Blur",
         (String[] s) -> new FilterCmd(this.view, this.store, FilterType.Blur, s[0], s[1]));
     this.transformations.put("Brighten",
@@ -219,6 +231,10 @@ public class ImageProcessorGuiControllerImpl implements ImageProcessorGuiControl
         (String[] s) -> new VisualizeCmd(this.view, this.store, Channel.Intensity, s[0], s[1]));
     this.transformations.put("Visualize Luma",
         (String[] s) -> new VisualizeCmd(this.view, this.store, Channel.Luma, s[0], s[1]));
+    this.transformations.put("Mosaic",
+        (String[] s) -> new MosaicCmd(this.view, this.store, Integer.parseInt(s[2]), s[0], s[1]));
+
+    // Set the transformations in the view
     List<String> list = new ArrayList<>(this.transformations.keySet());
     this.view.setTransformations(list);
   }

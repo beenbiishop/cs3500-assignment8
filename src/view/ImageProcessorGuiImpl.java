@@ -133,7 +133,7 @@ public class ImageProcessorGuiImpl implements ImageProcessorGui {
 
   @Override
   public String loadFile(FileNameExtensionFilter filter) {
-    JFileChooser chooser = new JFileChooser();
+    JFileChooser chooser = new JFileChooser(".");
     if (filter != null) {
       chooser.setFileFilter(filter);
     }
@@ -147,7 +147,7 @@ public class ImageProcessorGuiImpl implements ImageProcessorGui {
 
   @Override
   public String saveFile(FileNameExtensionFilter filter) {
-    JFileChooser chooser = new JFileChooser();
+    JFileChooser chooser = new JFileChooser(".");
     if (filter != null) {
       chooser.setFileFilter(filter);
     }

@@ -6,6 +6,7 @@ import controller.commands.FilterCmd.FilterType;
 import controller.commands.HorizontalFlipCmd;
 import controller.commands.LoadCmd;
 import controller.commands.MenuCmd;
+import controller.commands.MosaicCmd;
 import controller.commands.SaveCmd;
 import controller.commands.VerticalFlipCmd;
 import controller.commands.VisualizeCmd;
@@ -130,6 +131,8 @@ public class ImageProcessorControllerImpl implements ImageProcessorController {
             s.next()));
     this.commands.put("sepia",
         (Scanner s) -> new FilterCmd(this.view, this.store, FilterType.Sepia, s.next(), s.next()));
+    this.commands.put("mosaic",
+        (Scanner s) -> new MosaicCmd(this.view, this.store, s.nextInt(), s.next(), s.next()));
   }
 
 }

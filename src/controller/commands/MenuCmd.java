@@ -64,6 +64,10 @@ public class MenuCmd implements ImageProcessorCmd {
     this.view.renderMessage(
         "* \"sharpen\" <filename> <new filename> - transforms an image to a new sharpened image"
             + System.lineSeparator());
+    this.view.renderMessage(
+        "* \"mosaic\" <number of seeds> <filename> <new filename> - transforms an image to a new"
+            + " image with a mosaic filter broken up into a given number of seeds applied"
+            + System.lineSeparator());
     this.view.renderMessage("Command: ");
   }
 
