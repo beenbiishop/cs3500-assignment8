@@ -16,11 +16,13 @@ import controller.prompters.MosaicPrompter;
 import controller.prompters.StandardPrompter;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import model.Image;
 import model.ImageUtils;
 import model.StoredImages;
@@ -74,7 +76,7 @@ public class ImageProcessorGuiControllerImpl implements ImageProcessorGuiControl
 
   @Override
   public void loadImage() {
-    String file = this.view.loadFile(null);
+    String file = this.view.loadFile(this.supportedExtensions());
     if (file == null) {
       this.view.renderMessage("Load cancelled.");
       return;
@@ -111,7 +113,7 @@ public class ImageProcessorGuiControllerImpl implements ImageProcessorGuiControl
 
   @Override
   public void saveImage() {
-    String file = this.view.saveFile(null);
+    String file = this.view.saveFile(this.supportedExtensions());
     if (file == null) {
       this.view.renderMessage("Save cancelled.");
       return;
@@ -251,6 +253,19 @@ public class ImageProcessorGuiControllerImpl implements ImageProcessorGuiControl
     // Set the transformations in the view
     List<String> list = new ArrayList<>(this.transformations.keySet());
     this.view.setTransformations(list);
+  }
+
+  /**
+   * Returns a file name extension filter for image files this controller supports.
+   *
+   * @return the file name extension filter
+   */
+  private final FileNameExtensionFilter supportedExtensions() {
+    List<String> extensions = new ArrayList<>();
+    extensions.addAll(Arrays.asList(new ImageIOHandler().getSupportedExtensions()));
+    extensions.addAll(Arrays.asList(new ImagePPMHandler().getSupportedExtensions()));
+    String[] exts = extensions.toArray(new String[extensions.size()]);
+    return new FileNameExtensionFilter("Supported Image Files", exts);
   }
 }
 

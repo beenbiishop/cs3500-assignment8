@@ -6,7 +6,7 @@
 
 ## Controller
 
-1. [ ] Move GUI commands to be in hash map
+1. [x] Reimplement method of applying transformations to be more expandable
 
 ## View
 
@@ -24,3 +24,5 @@
 3. [ ] Fix flip transformations
 4. [x] Implement mosaic
 5. [ ] Add mosaic to documentation
+6. [x] Implement downscale
+7. [ ] Add downscale to documentation

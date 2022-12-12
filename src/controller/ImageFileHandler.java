@@ -25,4 +25,11 @@ public interface ImageFileHandler {
    */
   void export(Image image, String path) throws IllegalArgumentException;
 
+  /**
+   * Returns an array of file extensions supported by this {@code ImageFileHandler}.
+   *
+   * @return the supported extensions
+   */
+  String[] getSupportedExtensions();
+
 }

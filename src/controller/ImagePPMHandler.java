@@ -108,5 +108,12 @@ public class ImagePPMHandler implements ImageFileHandler {
       throw new IllegalArgumentException(e.getMessage());
     }
   }
+
+  @Override
+  public String[] getSupportedExtensions() {
+    String[] ret = new String[1];
+    ret[0] = "ppm";
+    return ret;
+  }
 }
 

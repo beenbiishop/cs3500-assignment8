@@ -112,4 +112,9 @@ public class ImageIOHandler implements ImageFileHandler {
     }
   }
 
+  @Override
+  public String[] getSupportedExtensions() {
+    return ImageIO.getReaderFormatNames().clone();
+  }
+
 }
