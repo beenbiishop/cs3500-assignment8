@@ -59,4 +59,15 @@ public final class ImageUtils {
     return bufferedImage;
   }
 
+  /**
+   * Clamps a given value to be within the range of 0 to 255.
+   *
+   * @param value the value to clamp
+   * @return the clamped value
+   */
+  // TODO: document and test
+  public static int clampRGB(int value) {
+    return Math.max(0, Math.min(255, value));
+  }
+
 }

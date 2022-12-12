@@ -1,6 +1,7 @@
 package controller;
 
 import controller.commands.BrightnessCmd;
+import controller.commands.DownscaleCmd;
 import controller.commands.FilterCmd;
 import controller.commands.FilterCmd.FilterType;
 import controller.commands.HorizontalFlipCmd;
@@ -9,12 +10,17 @@ import controller.commands.MosaicCmd;
 import controller.commands.SaveCmd;
 import controller.commands.VerticalFlipCmd;
 import controller.commands.VisualizeCmd;
+import controller.prompters.BrightnessPrompter;
+import controller.prompters.DownscalePrompter;
+import controller.prompters.MosaicPrompter;
+import controller.prompters.StandardPrompter;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import model.Image;
 import model.ImageUtils;
 import model.StoredImages;
@@ -31,6 +37,7 @@ import view.panels.TransformationPanel;
 public class ImageProcessorGuiControllerImpl implements ImageProcessorGuiController {
 
   private final StoredImages store;
+  private final Map<String, Supplier<ImageProcessorPrompter>> prompts;
   private final Map<String, Function<String[], ImageProcessorCmd>> transformations;
   private ImageProcessorGui view;
 
@@ -44,6 +51,7 @@ public class ImageProcessorGuiControllerImpl implements ImageProcessorGuiControl
       throw new IllegalArgumentException("Store cannot be null.");
     }
     this.store = store;
+    this.prompts = new HashMap<>();
     this.transformations = new HashMap<>();
   }
 
@@ -54,6 +62,7 @@ public class ImageProcessorGuiControllerImpl implements ImageProcessorGuiControl
     menu.addFeatures(this);
     TransformationPanel transformations = this.view.getTransformationPanel();
     transformations.addFeatures(this);
+    addPrompts();
     addTransformations();
   }
 
@@ -124,76 +133,70 @@ public class ImageProcessorGuiControllerImpl implements ImageProcessorGuiControl
 
   @Override
   public void transformImage(String command) {
-    String fileName = this.view.getCurrentImageName();
-    if (fileName == null) {
-      this.view.renderDialog(DialogType.Danger, "No image selected.");
-      return;
+    if (command == null) {
+      throw new IllegalArgumentException("Command cannot be null.");
     }
 
-    String[] args = new String[3];
-    args[0] = fileName;
-    List<String> questions = new ArrayList<>();
-    questions.add("Enter the name of the new image:");
-    String[] answers = null;
-
-    if (command.equals("Brighten") || command.equals("Darken")) {
-      questions.add("Enter the amount to brighten/darken by:");
-    }
-
-    if (command.equals("Mosaic")) {
-      questions.add("Enter the number of seeds to use:");
-    }
-
-    answers = this.view.renderInput(questions, null);
-    if (answers == null || answers.length == 0) {
-      this.view.renderMessage(command + " cancelled.");
-      return;
-    } else if (answers.length == 1) {
-      if (answers[0].length() == 0) {
-        this.view.renderDialog(DialogType.Danger, "Image name cannot be empty.");
-        return;
-      } else {
-        args[1] = answers[0];
-      }
-    } else if (answers.length == 2) {
-      if (answers[0].length() == 0 || answers[1].length() == 0) {
-        this.view.renderDialog(DialogType.Danger, "Must answer all form fields.");
-        return;
-      } else {
-        String numLabel;
-        if (command.equals("Brighten") || command.equals("Darken")) {
-          numLabel = "Amount";
-        } else {
-          numLabel = "Number of seeds";
-        }
-        try {
-          Integer.parseInt(answers[1]);
-          if (Integer.parseInt(answers[1]) < 0) {
-            this.view.renderDialog(DialogType.Danger, numLabel + " must be positive.");
-            return;
-          }
-        } catch (NumberFormatException e) {
-          this.view.renderDialog(DialogType.Danger, numLabel + " must be positive.");
-          return;
-        }
-        args[1] = answers[0];
-        args[2] = answers[1];
-      }
-    }
-
+    // Get the transformation's prompter and command
+    Supplier<ImageProcessorPrompter> prcmd = this.prompts.getOrDefault(command, null);
     Function<String[], ImageProcessorCmd> cmd = this.transformations.getOrDefault(command, null);
-    try {
-      if (cmd == null) {
-        throw new IllegalArgumentException("Unsupported transformation.");
-      } else {
-        cmd.apply(args).execute();
-        this.view.displayImage(args[1], ImageUtils.getBufferedImage(this.store.retrieve(args[1])),
-            ImageUtils.getChannelFrequencies(this.store.retrieve(args[1])));
+
+    // Attempt to prompt the user for input
+    String[] answers = null;
+    if (prcmd == null) {
+      throw new IllegalArgumentException("Prompter not defined for this transformation.");
+    } else {
+      ImageProcessorPrompter prompter = prcmd.get();
+      try {
+        answers = prompter.prompt();
+      } catch (IllegalArgumentException e) {
+        this.view.renderDialog(DialogType.Danger, e.getMessage());
+        return;
+      } catch (IllegalStateException e) {
+        this.view.renderMessage(e.getMessage());
+        return;
       }
+    }
+
+    // Check if the prompter returned a null value
+    if (answers == null || answers.length == 0) {
+      throw new IllegalArgumentException("Prompter returned a null value.");
+    }
+
+    // Attempt to execute the command
+    try {
+      cmd.apply(answers).execute();
+      this.view.displayImage(answers[1],
+          ImageUtils.getBufferedImage(this.store.retrieve(answers[1])),
+          ImageUtils.getChannelFrequencies(this.store.retrieve(answers[1])));
     } catch (IllegalArgumentException e) {
       this.view.renderDialog(DialogType.Danger, e.getMessage());
     }
 
+  }
+
+  /**
+   * Defines the prompters needed to collect user input for the transformations supported by this
+   * controller.
+   */
+  private void addPrompts() {
+    // Add prompters to the map
+    this.prompts.put("Blur", () -> new StandardPrompter(this.view));
+    this.prompts.put("Brighten", () -> new BrightnessPrompter(this.view, true));
+    this.prompts.put("Darken", () -> new BrightnessPrompter(this.view, false));
+    this.prompts.put("Greyscale", () -> new StandardPrompter(this.view));
+    this.prompts.put("Horizontal Flip", () -> new StandardPrompter(this.view));
+    this.prompts.put("Vertical Flip", () -> new StandardPrompter(this.view));
+    this.prompts.put("Sepia", () -> new StandardPrompter(this.view));
+    this.prompts.put("Sharpen", () -> new StandardPrompter(this.view));
+    this.prompts.put("Visualize Red", () -> new StandardPrompter(this.view));
+    this.prompts.put("Visualize Green", () -> new StandardPrompter(this.view));
+    this.prompts.put("Visualize Blue", () -> new StandardPrompter(this.view));
+    this.prompts.put("Visualize Value", () -> new StandardPrompter(this.view));
+    this.prompts.put("Visualize Intensity", () -> new StandardPrompter(this.view));
+    this.prompts.put("Visualize Luma", () -> new StandardPrompter(this.view));
+    this.prompts.put("Mosaic", () -> new MosaicPrompter(this.view));
+    this.prompts.put("Downscale", () -> new DownscalePrompter(this.view));
   }
 
   /**
@@ -233,6 +236,17 @@ public class ImageProcessorGuiControllerImpl implements ImageProcessorGuiControl
         (String[] s) -> new VisualizeCmd(this.view, this.store, Channel.Luma, s[0], s[1]));
     this.transformations.put("Mosaic",
         (String[] s) -> new MosaicCmd(this.view, this.store, Integer.parseInt(s[2]), s[0], s[1]));
+    this.transformations.put("Downscale",
+        (String[] s) -> new DownscaleCmd(this.view, this.store, Integer.parseInt(s[2]),
+            Integer.parseInt(s[3]), s[0], s[1]));
+
+    // Confirms a prompter is defined for each transformation
+    for (String transformation : this.transformations.keySet()) {
+      if (!this.prompts.containsKey(transformation)) {
+        throw new IllegalStateException(
+            "No prompter defined for the " + transformation + " transformation: ");
+      }
+    }
 
     // Set the transformations in the view
     List<String> list = new ArrayList<>(this.transformations.keySet());

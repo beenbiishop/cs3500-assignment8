@@ -68,6 +68,9 @@ public class MenuCmd implements ImageProcessorCmd {
         "* \"mosaic\" <number of seeds> <filename> <new filename> - transforms an image to a new"
             + " image with a mosaic filter broken up into a given number of seeds applied"
             + System.lineSeparator());
+    this.view.renderMessage(
+        "* \"downscale\" <new width> <new height> <filename> <new filename> - transforms an image "
+            + "to a new image downscaled to a given width and height" + System.lineSeparator());
     this.view.renderMessage("Command: ");
   }
 

@@ -1,6 +1,7 @@
 package controller;
 
 import controller.commands.BrightnessCmd;
+import controller.commands.DownscaleCmd;
 import controller.commands.FilterCmd;
 import controller.commands.FilterCmd.FilterType;
 import controller.commands.HorizontalFlipCmd;
@@ -133,6 +134,9 @@ public class ImageProcessorControllerImpl implements ImageProcessorController {
         (Scanner s) -> new FilterCmd(this.view, this.store, FilterType.Sepia, s.next(), s.next()));
     this.commands.put("mosaic",
         (Scanner s) -> new MosaicCmd(this.view, this.store, s.nextInt(), s.next(), s.next()));
+    this.commands.put("downscale",
+        (Scanner s) -> new DownscaleCmd(this.view, this.store, s.nextInt(), s.nextInt(), s.next(),
+            s.next()));
   }
 
 }
