@@ -41,12 +41,12 @@ public class Downscale implements ImageTransformation {
     // check if user is attempting to upscale
     if (yRatio < 1) {
       throw new IllegalArgumentException(
-          "The image's new width (" + this.nWidth + ") cannot be larger"
-              + " than the original width (" + image.getWidth() + ")");
+          "The image's new width (" + this.nWidth + "px) cannot be larger"
+              + " than the original width (" + image.getWidth() + "px).");
     } else if (xRatio < 1) {
       throw new IllegalArgumentException(
-          "The image's new height (" + this.nHeight + ") cannot be larger"
-              + " than the original height (" + image.getHeight() + ")");
+          "The image's new height (" + this.nHeight + "px) cannot be larger"
+              + " than the original height (" + image.getHeight() + "px).");
     }
 
     // set the new pixels to the average of the old pixels
