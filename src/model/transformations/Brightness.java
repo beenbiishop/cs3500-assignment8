@@ -21,18 +21,22 @@ public class Brightness implements ImageTransformation {
    * @throws IllegalArgumentException if the given amount is not positive or negative
    */
   public Brightness(int amount) throws IllegalArgumentException {
+    System.out.println("Brightness constructor called");
     if (amount == 0) {
       throw new IllegalArgumentException("The adjustment amount must be non-zero");
     }
+    System.out.println("Checked amount");
     this.amount = amount;
+    System.out.println("Set amount");
   }
 
   @Override
   public Image transform(Image image) {
+    Color[][] oldPixels = image.getPixels();
     Color[][] newPixels = new Color[image.getHeight()][image.getWidth()];
     for (int i = 0; i < image.getHeight(); i++) {
       for (int j = 0; j < image.getWidth(); j++) {
-        Color pixel = image.getPixels()[i][j];
+        Color pixel = oldPixels[i][j];
 
         int red = pixel.getRed() + this.amount;
         int blue = pixel.getBlue() + this.amount;
@@ -41,6 +45,7 @@ public class Brightness implements ImageTransformation {
         red = Math.max(0, Math.min(red, 255));
         green = Math.max(0, Math.min(green, 255));
         blue = Math.max(0, Math.min(blue, 255));
+
         newPixels[i][j] = new Color(red, green, blue);
       }
     }
