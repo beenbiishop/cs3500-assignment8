@@ -113,15 +113,15 @@ public class ImageProcessorGuiControllerImpl implements ImageProcessorGuiControl
 
   @Override
   public void saveImage() {
-    String file = this.view.saveFile(this.supportedExtensions());
-    if (file == null) {
-      this.view.renderMessage("Save cancelled.");
+    String name = this.view.getCurrentImageName();
+    if (name == null) {
+      this.view.renderDialog(DialogType.Danger, "No images loaded");
       return;
     }
 
-    String name = this.view.getCurrentImageName();
-    if (name == null) {
-      this.view.renderDialog(DialogType.Danger, "No image selected.");
+    String file = this.view.saveFile(this.supportedExtensions());
+    if (file == null) {
+      this.view.renderMessage("Save cancelled.");
       return;
     }
 

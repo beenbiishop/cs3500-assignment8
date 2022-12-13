@@ -17,6 +17,7 @@ public class MenubarPanel extends JMenuBar {
   private final JMenuItem loadItem;
   private final JMenuItem saveItem;
   private final JMenuItem quitItem;
+//  private final JMenuItem maskItem;
 
   /**
    * Constructs a new menu bar panel.
