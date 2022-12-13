@@ -1,11 +1,7 @@
 package controller.commands;
 
 import controller.ImageProcessorCmd;
-import model.Image;
-import model.ImageTransformation;
 import model.StoredImages;
-import model.transformations.Brightness;
-import model.transformations.Mask;
 import view.ImageProcessorView;
 
 /**
@@ -66,26 +62,32 @@ public class BrightnessCmd implements ImageProcessorCmd {
     this.maskFileName = maskFileName.toLowerCase();
   }
 
-
   @Override
-  public void execute() {
-    Image retrieved = this.store.retrieve(this.fileName);
-    ImageTransformation brightness = new Brightness(this.amount);
-    Image brightened = brightness.transform(retrieved);
-    if (this.maskFileName == null) {
-      this.store.add(this.newFileName, brightened, true);
-      this.view.renderMessage(
-          "The brightness of \"" + this.fileName + "\" has been adjusted by " + this.amount
-              + System.lineSeparator() + "Command: ");
-    } else {
-      Image maskImage = this.store.retrieve(this.maskFileName);
-      ImageTransformation mask = new Mask(retrieved, maskImage);
-      Image masked = mask.transform(brightened);
-      this.store.add(this.newFileName, masked, true);
-      this.view.renderMessage(
-          "The brightness of \"" + this.fileName + "\" has been adjusted by " + this.amount
-              + " in the area masked by \"" + this.maskFileName + "\"" + System.lineSeparator()
-              + "Command: ");
-    }
+  public void execute() throws IllegalArgumentException {
+    System.out.println("Brightness command executed");
   }
+
+//  @Override
+//  public void execute() {
+//    Image retrieved = this.store.retrieve(this.fileName);
+//    System.out.println("Retrieved image: " + retrieved);
+//    ImageTransformation brightness = new Brightness(this.amount);
+//    System.out.println("Brightness transformation applied");
+//    Image brightened = brightness.transform(retrieved);
+//    if (this.maskFileName == null) {
+//      this.store.add(this.newFileName, brightened, true);
+//      this.view.renderMessage(
+//          "The brightness of \"" + this.fileName + "\" has been adjusted by " + this.amount
+//              + System.lineSeparator() + "Command: ");
+//    } else {
+//      Image maskImage = this.store.retrieve(this.maskFileName);
+//      ImageTransformation mask = new Mask(retrieved, maskImage);
+//      Image masked = mask.transform(brightened);
+//      this.store.add(this.newFileName, masked, true);
+//      this.view.renderMessage(
+//          "The brightness of \"" + this.fileName + "\" has been adjusted by " + this.amount
+//              + " in the area masked by \"" + this.maskFileName + "\"" + System.lineSeparator()
+//              + "Command: ");
+//    }
+//  }
 }

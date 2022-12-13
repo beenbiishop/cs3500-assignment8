@@ -108,9 +108,9 @@ public class ImageProcessorControllerImpl implements ImageProcessorController {
     this.commands.put("visualize-intensity", (Scanner s) -> parseVisualize(s, Channel.Intensity));
     this.commands.put("visualize-luma", (Scanner s) -> parseVisualize(s, Channel.Luma));
     this.commands.put("blur", (Scanner s) -> parseFilter(s, FilterType.Blur));
-    this.commands.put("sharpen", (Scanner s) -> parseFilter(s, FilterType.Blur));
-    this.commands.put("greyscale", (Scanner s) -> parseFilter(s, FilterType.Blur));
-    this.commands.put("sepia", (Scanner s) -> parseFilter(s, FilterType.Blur));
+    this.commands.put("sharpen", (Scanner s) -> parseFilter(s, FilterType.Sharpen));
+    this.commands.put("greyscale", (Scanner s) -> parseFilter(s, FilterType.Greyscale));
+    this.commands.put("sepia", (Scanner s) -> parseFilter(s, FilterType.Sepia));
     this.commands.put("brighten", (Scanner s) -> parseBrightness(s, true));
     this.commands.put("darken", (Scanner s) -> parseBrightness(s, false));
     this.commands.put("horizontal-flip",
@@ -174,21 +174,25 @@ public class ImageProcessorControllerImpl implements ImageProcessorController {
   private BrightnessCmd parseBrightness(Scanner s, boolean isBrighten) {
     String nextLine = s.nextLine().trim();
     String[] params = nextLine.split("\\s+");
+    int multiplier = (isBrighten) ? 1 : -1;
+
+    // process the amount
+    int amount;
     try {
-      switch (params.length) {
-        case 3:
-          return new BrightnessCmd(this.view, this.store, Integer.parseInt(params[0]), params[1],
-              params[2]);
-        case 4:
-          return new BrightnessCmd(this.view, this.store, Integer.parseInt(params[0]), params[1],
-              params[2], params[3]);
-        default:
-          throw new IllegalArgumentException("Invalid command, please try again");
-      }
+      amount = multiplier * Integer.parseInt(params[0]);
     } catch (NumberFormatException e) {
-      throw new IllegalArgumentException("Invalid command, please try again");
+      throw new IllegalArgumentException("Invalid amount, please try again");
+    }
+
+    // return the command
+    switch (params.length) {
+      case 3:
+        return new BrightnessCmd(this.view, this.store, amount, params[1], params[2]);
+      case 4:
+        return new BrightnessCmd(this.view, this.store, amount, params[1], params[2], params[3]);
+      default:
+        throw new IllegalArgumentException("Invalid command, please try again");
     }
   }
-
 
 }

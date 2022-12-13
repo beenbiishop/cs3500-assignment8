@@ -45,7 +45,7 @@ public final class ImageProcessorRunner {
         try {
           input = new BufferedReader(new FileReader(args[1]));
         } catch (FileNotFoundException e) {
-          System.out.println("Log file not found.");
+          System.out.println("Script file not found.");
           return;
         }
       } else { // > 2 arguments -> invalid
