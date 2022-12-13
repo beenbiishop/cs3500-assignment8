@@ -1,0 +1,54 @@
+load ExampleImage3.png ex
+load ExampleMask1.png ms
+
+visualize-red ex ex-v-red
+visualize-green ex ex-v-green
+Visualize-blue ex ex-v-blue
+visualize-value ex ex-v-value
+visualize-intensity ex ex-v-intensity
+visualize-luma ex ex-v-luma
+blur ex ex-blur
+sepia ex ex-sepia
+sharpen ex ex-sharpen
+greyscale ex ex-greyscale
+brighten 50 ex ex-brighter-50
+darken 50 ex ex-darker-50
+
+visualize-red ex ms ms-v-red
+visualize-green ex ms ms-v-green
+Visualize-blue ex ms ms-v-blue
+visualize-value ex ms ms-v-value
+visualize-intensity ex ms ms-v-intensity
+visualize-luma ex ms ms-v-luma
+blur ex ms ms-blur
+sepia ex ms ms-sepia
+sharpen ex ms ms-sharpen
+greyscale ex ms ms-greyscale
+brighten 50 ex ms ms-brighter-50
+darken 50 ex ms ms-darker-50
+
+save processed/example3-v-red.png ex-v-red
+save processed/example3-v-green.png ex-v-green
+save processed/example3-v-blue.png ex-v-blue
+save processed/example3-v-value.png ex-v-value
+save processed/example3-v-intensity.png ex-v-intensity
+save processed/example3-v-luma.png ex-v-luma
+save processed/example3-blur.png ex-blur
+save processed/example3-sepia.png ex-sepia
+save processed/example3-sharpen.png ex-sharpen
+save processed/example3-greyscale.png ex-greyscale
+save processed/example3-brighter-50.png ex-brighter-50
+save processed/example3-darker-50.png ex-darker-50
+
+save masked/example3-mask1-v-red.png ms-v-red
+save masked/example3-mask1-v-green.png ms-v-green
+save masked/example3-mask1-v-blue.png ms-v-blue
+save masked/example3-mask1-v-value.png ms-v-value
+save masked/example3-mask1-v-intensity.png ms-v-intensity
+save masked/example3-mask1-v-luma.png ms-v-luma
+save masked/example3-mask1-blur.png ms-blur
+save masked/example3-mask1-sepia.png ms-sepia
+save masked/example3-mask1-sharpen.png ms-sharpen
+save masked/example3-mask1-greyscale.png ms-greyscale
+save masked/example3-mask1-brighter-50.png ms-brighter-50
+save masked/example3-mask1-darker-50.png ms-darker-50

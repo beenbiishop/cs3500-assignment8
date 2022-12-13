@@ -34,11 +34,39 @@ script file interface use the syntax below:
 * "sepia" `<filename>` `<new filename>` - _transforms an image to a new sepia filtered image_
 * "greyscale" `<filename>` `<new filename>` - _transforms an image to a new greyscale filtered
   image_
+* "mosaic" `<number of seeds>` `<filename>` `<new filename>` - _transforms an image to a new mosaic
+  filtered image_
+* "downscale" `<new width>` `<new height>` `<filename>` `<new filename>` - _downscales an image to
+  the given dimensions_
 
 This functionality is fully supported by the graphical user interface, but the loading/saving of
 images and quitting the program is handled by items in the menu bar (File > Load Image, File > Save
 Image, File > Quit Program). Once an image is loaded, the user can select the transformation they
 want to perform from the list of transformations in the sidebar.
+
+### Masking
+
+The terminal and script file interface support masking. Masking allows users to apply a
+transformation to a specific region of an image. To use masking, the user must first load an image,
+then load a mask image. The mask image must be an image with the same dimensions as the image to be
+transformed. The black pixels in the mask image will be transformed, and the white pixels will not
+be transformed.
+
+The following commands support masking in the terminal and script file interfaces:
+
+* blur
+* brighten
+* darken
+* greyscale
+* sepia
+* sharpen
+* visualize-<component>
+
+The syntax for masking is the same as the syntax for the commands above, except that the mask image
+is specified as the argument in between the original image file name and the new image file name.
+For example, for the "brighten" transformation, the syntax
+is `brighten <amount> <filename> <mask filename> <new filename>`. The old syntax is still supported
+by simply leaving out the mask filename.
 
 ## Graphical User Interface (GUI)
 

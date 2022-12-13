@@ -15,6 +15,8 @@ transformations such as:
 * Brightening or darkening an image
 * Blurring or sharpening an image
 * Filtering an image to greyscale or sepia
+* Applying a mosaic filter to an image
+* Downscaling an image to a given width and height
 
 The user can interact with the program in one of three ways:
 
@@ -28,11 +30,19 @@ The program currently supports "PPM" images and any image type supported by the 
 library. We guarantee support for "PNG", "JPG/JPEG", and "BMP" images. The program will
 automatically detect the format to save to/load from based on the file extension.
 
-We have provided two test images located in the `res` folder named `ExampleImage.ppm`
-and `ExampleImage2.png`. We have also processed this image with all available commands to visualize
-transformations without running the program and saved them to the subfolder `res/processed`
+We have provided three test images located in the `res` folder
+named `ExampleImage.ppm`, `ExampleImage2.png`, and `ExampleImage3.png`. We have also processed this
+image with all available commands to visualize transformations without running the program and saved
+them to the subfolder `res/processed`
 . `ExampleImage.ppm` was created by Smita Rosemary, and has been used with her
-permission. `ExampleImage2.png` was created by Ben Bishop, and has been used with his permission.
+permission. `ExampleImage2.png` and `ExampleImage3.png` were created by Ben Bishop, and have been
+used with his permission.
+
+In the command line interface and the script file interface, the user can specify a mask to perform
+a transformation only on certain areas of the source image. More information on this can be found in
+the [USEME.md](USEME.md) file, but an example for each supported transformation is located in
+the `res/masked` folder with the `ExampleMask1.png` mask appled to the `ExampleImage3.png` image.
+The `ExampleMask1.png` mask was created by Ben Bishop, and has been used with his permission.
 
 ## How to Use
 

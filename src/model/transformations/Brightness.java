@@ -21,13 +21,10 @@ public class Brightness implements ImageTransformation {
    * @throws IllegalArgumentException if the given amount is not positive or negative
    */
   public Brightness(int amount) throws IllegalArgumentException {
-    System.out.println("Brightness constructor called");
     if (amount == 0) {
       throw new IllegalArgumentException("The adjustment amount must be non-zero");
     }
-    System.out.println("Checked amount");
     this.amount = amount;
-    System.out.println("Set amount");
   }
 
   @Override
