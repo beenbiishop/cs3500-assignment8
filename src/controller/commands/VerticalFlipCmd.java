@@ -48,7 +48,6 @@ public class VerticalFlipCmd implements ImageProcessorCmd {
     Image processed = flip.transform(retrieved);
     this.store.add(this.newFileName, processed, true);
     this.view.renderMessage(
-        "Vertically flipped \"" + this.fileName + "\" and saved as \"" + this.newFileName + "\""
-            + System.lineSeparator() + "Command: ");
+        "Vertically flipped \"" + this.fileName + System.lineSeparator() + "Command: ");
   }
 }

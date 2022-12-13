@@ -15,10 +15,11 @@ public class HorizontalFlip implements ImageTransformation {
   public Image transform(Image image) {
     int height = image.getHeight();
     int width = image.getWidth();
+    Color[][] oldPixels = image.getPixels();
     Color[][] newPixels = new Color[height][width];
     for (int i = 0; i < height; i++) {
       for (int j = 0; j < width; j++) {
-        Color pixel = image.getPixels()[i][width - j - 1];
+        Color pixel = oldPixels[i][width - j - 1];
         newPixels[i][j] = pixel;
       }
     }

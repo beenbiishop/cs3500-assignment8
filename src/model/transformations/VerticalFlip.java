@@ -15,10 +15,11 @@ public class VerticalFlip implements ImageTransformation {
   public Image transform(Image image) {
     int height = image.getHeight();
     int width = image.getWidth();
+    Color[][] oldPixels = image.getPixels();
     Color[][] newPixels = new Color[height][width];
     for (int i = 0; i < height; i++) {
       for (int j = 0; j < width; j++) {
-        Color pixel = image.getPixels()[height - i - 1][j];
+        Color pixel = oldPixels[height - i - 1][j];
         newPixels[i][j] = pixel;
       }
     }
