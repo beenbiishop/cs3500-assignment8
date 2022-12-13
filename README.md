@@ -50,6 +50,32 @@ Instructions on how to use the program can be found in the [USEME.md](USEME.md) 
 
 ## Changelog
 
+### Assignment 8 (12/13/2022)
+
+_Fourth version. Retained all existing functionality, and added two new features: downscaling as
+well as partial image manipulation, and a new transformation preview panel._
+
+#### Changes
+
+* Added to the `ImageUtils` to allow for new functionality.
+    * `overlayImage` to overlay two given images from a given starting point on the background
+      image.
+    * `getSubset` to get a subset of the given image's pixels.
+* Migrated the user prompting for transformations to use the command pattern as well
+    * Updated the `transformImage` method in `ImageProcessor` to use the command pattern
+    * Created new implementations of a new interface `ImageProcessorPrompter`
+        * `BrightnessPrompter` to prompt the user for a brightness value
+        * `DownscalePrompter` to prompt the user for a width and height to downscale to
+        * `MosaicPrompter` to prompt the user for a number of seeds
+        * `StandardPrompter` to prompt a user only for the new image file name
+* Downscaling
+    * `DownscaleCmd` the command that represents the Downscale transformation.
+    * `Downscale` Downscale the image to the given width and height.
+    * `DownscalePrompter` The prompter that gets the input needed from the user to perform a
+      downscale transformation.
+* Partial Image Manipulation
+    * `Mask` added a new transformation that allowed for transformations to be made on given dimensions of the image.
+
 ### Assignment 6 (11/22/2022)
 
 _Third version. Retained all existing functionality, and added a new view, allowing the user to view
