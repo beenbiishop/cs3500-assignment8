@@ -6,6 +6,7 @@ import model.ImageTransformation;
 import model.StoredImages;
 import model.transformations.Blur;
 import model.transformations.Greyscale;
+import model.transformations.Mask;
 import model.transformations.Sepia;
 import model.transformations.Sharpen;
 import view.ImageProcessorView;
@@ -22,6 +23,7 @@ public class FilterCmd implements ImageProcessorCmd {
   private final FilterType type;
   private final String fileName;
   private final String newFileName;
+  private String maskFileName = null;
 
   /**
    * Constructs a Filter command.
@@ -48,6 +50,25 @@ public class FilterCmd implements ImageProcessorCmd {
     this.newFileName = newFileName.toLowerCase();
   }
 
+  /**
+   * Constructs a Filter command that supports a mask.
+   *
+   * @param view        the view to display the messages to.
+   * @param store       the store to store images in.
+   * @param type        the enum that represents which filter to apply.
+   * @param fileName    the file name of the image to be transformed.
+   * @param newFileName the file name of the new transformed image.
+   * @throws IllegalArgumentException if any of the parameters are null.
+   */
+  public FilterCmd(ImageProcessorView view, StoredImages store, FilterType type, String fileName,
+      String maskFileName, String newFileName) {
+    this(view, store, type, fileName, newFileName);
+    if (maskFileName == null) {
+      throw new IllegalArgumentException("Mask file name cannot be null");
+    }
+    this.maskFileName = maskFileName.toLowerCase();
+  }
+
 
   @Override
   public void execute() throws IllegalArgumentException {
@@ -70,12 +91,22 @@ public class FilterCmd implements ImageProcessorCmd {
         // should never happen
         throw new IllegalArgumentException("Invalid filter type");
     }
-    Image processed = filter.transform(retrieved);
-    this.store.add(this.newFileName, processed, true);
-    this.view.renderMessage(
-        "Applied the " + this.type.toString().toLowerCase() + " filter to \"" + this.fileName
-            + "\" and saved as \"" + this.newFileName + "\"" + System.lineSeparator()
-            + "Command: ");
+    Image filtered = filter.transform(retrieved);
+    if (this.maskFileName == null) {
+      this.store.add(this.newFileName, filtered, true);
+      this.view.renderMessage(
+          "Applied the " + this.type.toString().toLowerCase() + " filter to \"" + this.fileName
+              + "\"" + System.lineSeparator() + "Command: ");
+    } else {
+      Image maskImage = this.store.retrieve(this.maskFileName);
+      ImageTransformation mask = new Mask(retrieved, maskImage);
+      Image masked = mask.transform(filtered);
+      this.store.add(this.newFileName, masked, true);
+      this.view.renderMessage(
+          "Applied the " + this.type.toString().toLowerCase() + " filter to \"" + this.fileName
+              + "\" in the area masked by \"" + this.maskFileName + "\"" + System.lineSeparator()
+              + "Command: ");
+    }
   }
 
   /**

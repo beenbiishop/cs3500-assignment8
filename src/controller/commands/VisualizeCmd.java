@@ -4,6 +4,7 @@ import controller.ImageProcessorCmd;
 import model.Image;
 import model.ImageTransformation;
 import model.StoredImages;
+import model.transformations.Mask;
 import model.transformations.Visualize;
 import model.transformations.Visualize.Channel;
 import view.ImageProcessorView;
@@ -21,6 +22,7 @@ public class VisualizeCmd implements ImageProcessorCmd {
   private final Channel channel;
   private final String fileName;
   private final String newFileName;
+  private String maskFileName = null;
 
   /**
    * Constructs a Visualize command.
@@ -47,16 +49,35 @@ public class VisualizeCmd implements ImageProcessorCmd {
     this.newFileName = newFileName.toLowerCase();
   }
 
+  public VisualizeCmd(ImageProcessorView view, StoredImages store, Channel channel, String fileName,
+      String maskFileName, String newFileName) {
+    this(view, store, channel, fileName, newFileName);
+    if (maskFileName == null) {
+      throw new IllegalArgumentException("Mask file name cannot be null");
+    }
+    this.maskFileName = maskFileName.toLowerCase();
+  }
+
 
   @Override
   public void execute() throws IllegalArgumentException {
     Image retrieved = this.store.retrieve(this.fileName);
     ImageTransformation visualize = new Visualize(this.channel);
-    Image processed = visualize.transform(retrieved);
-    this.store.add(this.newFileName, processed, true);
-    this.view.renderMessage(
-        "Transformed \"" + this.fileName + "\" to visualize the " + this.channel.toString()
-            .toLowerCase() + " channel and saved as \"" + this.newFileName + "\""
-            + System.lineSeparator() + "Command: ");
+    Image visualized = visualize.transform(retrieved);
+    if (this.maskFileName == null) {
+      this.store.add(this.newFileName, visualized, true);
+      this.view.renderMessage(
+          "Transformed \"" + this.fileName + "\" to visualize the " + this.channel.toString()
+              .toLowerCase() + " channel" + System.lineSeparator() + "Command: ");
+    } else {
+      Image maskImage = this.store.retrieve(this.maskFileName);
+      ImageTransformation mask = new Mask(retrieved, maskImage);
+      Image masked = mask.transform(visualized);
+      this.store.add(this.newFileName, masked, true);
+      this.view.renderMessage(
+          "Transformed \"" + this.fileName + "\" to visualize the " + this.channel.toString()
+              .toLowerCase() + " channel in the area masked by \"" + this.maskFileName + "\""
+              + System.lineSeparator() + "Command: ");
+    }
   }
 }

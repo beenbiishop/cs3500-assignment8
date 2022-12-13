@@ -5,6 +5,7 @@ import model.Image;
 import model.ImageTransformation;
 import model.StoredImages;
 import model.transformations.Brightness;
+import model.transformations.Mask;
 import view.ImageProcessorView;
 
 /**
@@ -19,6 +20,7 @@ public class BrightnessCmd implements ImageProcessorCmd {
   private final int amount;
   private final String fileName;
   private final String newFileName;
+  private String maskFileName = null;
 
   /**
    * Constructs a Brightness command.
@@ -45,15 +47,45 @@ public class BrightnessCmd implements ImageProcessorCmd {
     this.newFileName = newFileName.toLowerCase();
   }
 
+  /**
+   * Constructs a Brightness command that supports a mask.
+   *
+   * @param view         the view to display the messages to.
+   * @param store        the store to store images in.
+   * @param amount       how much to brighten or darken the image by.
+   * @param fileName     the file name of the image to be transformed.
+   * @param maskFileName the file name of the mask image.
+   * @param newFileName  the file name of the new transformed image.
+   */
+  public BrightnessCmd(ImageProcessorView view, StoredImages store, int amount, String fileName,
+      String maskFileName, String newFileName) {
+    this(view, store, amount, fileName, newFileName);
+    if (maskFileName == null) {
+      throw new IllegalArgumentException("Mask file name cannot be null");
+    }
+    this.maskFileName = maskFileName.toLowerCase();
+  }
+
 
   @Override
   public void execute() {
     Image retrieved = this.store.retrieve(this.fileName);
     ImageTransformation brightness = new Brightness(this.amount);
-    Image processed = brightness.transform(retrieved);
-    this.store.add(this.newFileName, processed, true);
-    this.view.renderMessage(
-        "The brightness of \"" + this.fileName + "\" has been adjusted by " + this.amount
-            + System.lineSeparator() + "Command: ");
+    Image brightened = brightness.transform(retrieved);
+    if (this.maskFileName == null) {
+      this.store.add(this.newFileName, brightened, true);
+      this.view.renderMessage(
+          "The brightness of \"" + this.fileName + "\" has been adjusted by " + this.amount
+              + System.lineSeparator() + "Command: ");
+    } else {
+      Image maskImage = this.store.retrieve(this.maskFileName);
+      ImageTransformation mask = new Mask(retrieved, maskImage);
+      Image masked = mask.transform(brightened);
+      this.store.add(this.newFileName, masked, true);
+      this.view.renderMessage(
+          "The brightness of \"" + this.fileName + "\" has been adjusted by " + this.amount
+              + "in the area masked by \"" + this.maskFileName + "\"" + System.lineSeparator()
+              + "Command: ");
+    }
   }
 }

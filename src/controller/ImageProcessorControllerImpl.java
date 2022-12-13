@@ -90,6 +90,15 @@ public class ImageProcessorControllerImpl implements ImageProcessorController {
     }
   }
 
+
+  private void addCommandsOld() {
+    this.commands.put("brighten",
+        (Scanner s) -> new BrightnessCmd(this.view, this.store, s.nextInt(), s.next(), s.next()));
+    this.commands.put("darken",
+        (Scanner s) -> new BrightnessCmd(this.view, this.store, (s.nextInt() * -1), s.next(),
+            s.next()));
+  }
+
   /**
    * Adds all supported commands and the lambda functions to create the command objects to this
    * controller object's map of valid commands.
@@ -100,43 +109,91 @@ public class ImageProcessorControllerImpl implements ImageProcessorController {
         (Scanner s) -> new LoadCmd(this.view, this.store, s.next(), s.next()));
     this.commands.put("save",
         (Scanner s) -> new SaveCmd(this.view, this.store, s.next(), s.next()));
-    this.commands.put("visualize-red",
-        (Scanner s) -> new VisualizeCmd(this.view, this.store, Channel.Red, s.next(), s.next()));
-    this.commands.put("visualize-green",
-        (Scanner s) -> new VisualizeCmd(this.view, this.store, Channel.Green, s.next(), s.next()));
-    this.commands.put("visualize-blue",
-        (Scanner s) -> new VisualizeCmd(this.view, this.store, Channel.Blue, s.next(), s.next()));
-    this.commands.put("visualize-value",
-        (Scanner s) -> new VisualizeCmd(this.view, this.store, Channel.Value, s.next(), s.next()));
-    this.commands.put("visualize-intensity",
-        (Scanner s) -> new VisualizeCmd(this.view, this.store, Channel.Intensity, s.next(),
-            s.next()));
-    this.commands.put("visualize-luma",
-        (Scanner s) -> new VisualizeCmd(this.view, this.store, Channel.Luma, s.next(), s.next()));
-    this.commands.put("brighten",
-        (Scanner s) -> new BrightnessCmd(this.view, this.store, s.nextInt(), s.next(), s.next()));
-    this.commands.put("darken",
-        (Scanner s) -> new BrightnessCmd(this.view, this.store, (s.nextInt() * -1), s.next(),
-            s.next()));
+    this.commands.put("visualize-red", (Scanner s) -> parseVisualize(s, Channel.Red));
+    this.commands.put("visualize-green", (Scanner s) -> parseVisualize(s, Channel.Green));
+    this.commands.put("visualize-blue", (Scanner s) -> parseVisualize(s, Channel.Blue));
+    this.commands.put("visualize-value", (Scanner s) -> parseVisualize(s, Channel.Value));
+    this.commands.put("visualize-intensity", (Scanner s) -> parseVisualize(s, Channel.Intensity));
+    this.commands.put("visualize-luma", (Scanner s) -> parseVisualize(s, Channel.Luma));
+    this.commands.put("blur", (Scanner s) -> parseFilter(s, FilterType.Blur));
+    this.commands.put("sharpen", (Scanner s) -> parseFilter(s, FilterType.Blur));
+    this.commands.put("greyscale", (Scanner s) -> parseFilter(s, FilterType.Blur));
+    this.commands.put("sepia", (Scanner s) -> parseFilter(s, FilterType.Blur));
+    this.commands.put("brighten", (Scanner s) -> parseBrightness(s, true));
+    this.commands.put("darken", (Scanner s) -> parseBrightness(s, false));
     this.commands.put("horizontal-flip",
         (Scanner s) -> new HorizontalFlipCmd(this.view, this.store, s.next(), s.next()));
     this.commands.put("vertical-flip",
         (Scanner s) -> new VerticalFlipCmd(this.view, this.store, s.next(), s.next()));
-    this.commands.put("blur",
-        (Scanner s) -> new FilterCmd(this.view, this.store, FilterType.Blur, s.next(), s.next()));
-    this.commands.put("sharpen",
-        (Scanner s) -> new FilterCmd(this.view, this.store, FilterType.Sharpen, s.next(),
-            s.next()));
-    this.commands.put("greyscale",
-        (Scanner s) -> new FilterCmd(this.view, this.store, FilterType.Greyscale, s.next(),
-            s.next()));
-    this.commands.put("sepia",
-        (Scanner s) -> new FilterCmd(this.view, this.store, FilterType.Sepia, s.next(), s.next()));
     this.commands.put("mosaic",
         (Scanner s) -> new MosaicCmd(this.view, this.store, s.nextInt(), s.next(), s.next()));
     this.commands.put("downscale",
         (Scanner s) -> new DownscaleCmd(this.view, this.store, s.nextInt(), s.nextInt(), s.next(),
             s.next()));
   }
+
+  /**
+   * Parses the given scanner to create a new {@link VisualizeCmd} object.
+   *
+   * @param s       the scanner to parse
+   * @param channel the channel to visualize
+   * @return the new visualize command object
+   */
+  private VisualizeCmd parseVisualize(Scanner s, Channel channel) {
+    String[] params = s.nextLine().split(" ");
+    switch (params.length) {
+      case 2:
+        return new VisualizeCmd(this.view, this.store, channel, params[0], params[1]);
+      case 3:
+        return new VisualizeCmd(this.view, this.store, channel, params[0], params[1], params[2]);
+      default:
+        throw new IllegalArgumentException("Invalid command, please try again");
+    }
+  }
+
+  /**
+   * Parses the given scanner to create a new {@link FilterCmd} object.
+   *
+   * @param s    the scanner to parse
+   * @param type the type of filter to return
+   * @return the new filter command object
+   */
+  private FilterCmd parseFilter(Scanner s, FilterType type) {
+    String[] params = s.nextLine().split(" ");
+    switch (params.length) {
+      case 2:
+        return new FilterCmd(this.view, this.store, type, params[0], params[1]);
+      case 3:
+        return new FilterCmd(this.view, this.store, type, params[0], params[1], params[2]);
+      default:
+        throw new IllegalArgumentException("Invalid command, please try again");
+    }
+  }
+
+  /**
+   * Parses the given scanner to create a new {@link BrightnessCmd} object.
+   *
+   * @param s          the scanner to parse
+   * @param isBrighten true if a brighten command, false if a darken command
+   * @return the new brightness command object
+   */
+  private BrightnessCmd parseBrightness(Scanner s, boolean isBrighten) {
+    String[] params = s.nextLine().split(" ");
+    try {
+      switch (params.length) {
+        case 3:
+          return new BrightnessCmd(this.view, this.store, Integer.parseInt(params[0]), params[1],
+              params[2]);
+        case 4:
+          return new BrightnessCmd(this.view, this.store, Integer.parseInt(params[0]), params[1],
+              params[2], params[3]);
+        default:
+          throw new IllegalArgumentException("Invalid command, please try again");
+      }
+    } catch (NumberFormatException e) {
+      throw new IllegalArgumentException("Invalid command, please try again");
+    }
+  }
+
 
 }
