@@ -51,22 +51,22 @@ public class MenuCmd implements ImageProcessorCmd {
    */
   private final void addTransformations() {
     List<String[]> items = new ArrayList<>();
-    items.add(new String[]{"visualize-<component>", "<filename> <new filename>",
+    items.add(new String[]{"visualize-<component>", "<filename> <*mask filename*> <new filename>",
         "applies a greyscale filter to an image using the given color channel "
             + "(\"red\", \"green\", \"blue\", \"value\", \"intensity\", or \"luma\")"});
-    items.add(new String[]{"brighten", "<amount> <filename> <new filename>",
+    items.add(new String[]{"brighten", "<amount> <filename> <*mask filename*> <new filename>",
         "brightens image by an amount"});
-    items.add(new String[]{"darken", "<amount> <filename> <new filename>",
+    items.add(new String[]{"darken", "<amount> <filename> <*mask filename*> <new filename>",
         "darkens an image by an amount"});
     items.add(new String[]{"horizontal-flip", "horizontally flips an image", ""});
     items.add(new String[]{"vertical-flip", "vertically flips an image", ""});
-    items.add(new String[]{"greyscale", "<filename> <new filename>",
+    items.add(new String[]{"greyscale", "<filename> <*mask filename*> <new filename>",
         "applies a greyscale filter to an image"});
-    items.add(
-        new String[]{"sepia", "<filename> <new filename>", "applies a sepia filter to an image"});
-    items.add(
-        new String[]{"blur", "<filename> <new filename>", "applies a blur filter to an image"});
-    items.add(new String[]{"sharpen", "<filename> <new filename>",
+    items.add(new String[]{"sepia", "<filename> <*mask filename*> <new filename>",
+        "applies a sepia filter to an image"});
+    items.add(new String[]{"blur", "<filename> <*mask filename*> <new filename>",
+        "applies a blur filter to an image"});
+    items.add(new String[]{"sharpen", "<filename> <*mask filename*> <new filename>",
         "transforms an image to a new sharpened image"});
     items.add(new String[]{"mosaic", "<number of seeds> <filename> <new filename>",
         "applies a mosaic filter to an image with the given number of seeds"});

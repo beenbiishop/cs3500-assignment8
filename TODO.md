@@ -26,3 +26,6 @@
 5. [ ] Add mosaic to documentation
 6. [x] Implement downscale
 7. [ ] Add downscale to documentation
+8. [x] Implement masking
+9. [ ] Add masking to documentation
+10. [ ] Document new example image and masking image

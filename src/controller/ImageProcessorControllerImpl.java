@@ -65,7 +65,8 @@ public class ImageProcessorControllerImpl implements ImageProcessorController {
     this.view.renderMessage("* Enter \"menu\" to see the list of supported commands or \"quit\""
         + " to exit the program" + System.lineSeparator()
         + "* After entering a command, hit return to process it" + System.lineSeparator()
-        + "Command: ");
+        + "* An optional mask can be applied to some commands – "
+        + "run the menu command to see the syntax" + System.lineSeparator() + "Command: ");
     while (scan.hasNext()) {
       String command = scan.next();
       if (command.equalsIgnoreCase("q") || command.equalsIgnoreCase("quit")) {
@@ -88,15 +89,6 @@ public class ImageProcessorControllerImpl implements ImageProcessorController {
         }
       }
     }
-  }
-
-
-  private void addCommandsOld() {
-    this.commands.put("brighten",
-        (Scanner s) -> new BrightnessCmd(this.view, this.store, s.nextInt(), s.next(), s.next()));
-    this.commands.put("darken",
-        (Scanner s) -> new BrightnessCmd(this.view, this.store, (s.nextInt() * -1), s.next(),
-            s.next()));
   }
 
   /**
@@ -140,7 +132,8 @@ public class ImageProcessorControllerImpl implements ImageProcessorController {
    * @return the new visualize command object
    */
   private VisualizeCmd parseVisualize(Scanner s, Channel channel) {
-    String[] params = s.nextLine().split(" ");
+    String nextLine = s.nextLine().trim();
+    String[] params = nextLine.split("\\s+");
     switch (params.length) {
       case 2:
         return new VisualizeCmd(this.view, this.store, channel, params[0], params[1]);
@@ -159,7 +152,8 @@ public class ImageProcessorControllerImpl implements ImageProcessorController {
    * @return the new filter command object
    */
   private FilterCmd parseFilter(Scanner s, FilterType type) {
-    String[] params = s.nextLine().split(" ");
+    String nextLine = s.nextLine().trim();
+    String[] params = nextLine.split("\\s+");
     switch (params.length) {
       case 2:
         return new FilterCmd(this.view, this.store, type, params[0], params[1]);
@@ -178,7 +172,8 @@ public class ImageProcessorControllerImpl implements ImageProcessorController {
    * @return the new brightness command object
    */
   private BrightnessCmd parseBrightness(Scanner s, boolean isBrighten) {
-    String[] params = s.nextLine().split(" ");
+    String nextLine = s.nextLine().trim();
+    String[] params = nextLine.split("\\s+");
     try {
       switch (params.length) {
         case 3:

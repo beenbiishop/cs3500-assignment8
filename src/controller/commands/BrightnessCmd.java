@@ -84,7 +84,7 @@ public class BrightnessCmd implements ImageProcessorCmd {
       this.store.add(this.newFileName, masked, true);
       this.view.renderMessage(
           "The brightness of \"" + this.fileName + "\" has been adjusted by " + this.amount
-              + "in the area masked by \"" + this.maskFileName + "\"" + System.lineSeparator()
+              + " in the area masked by \"" + this.maskFileName + "\"" + System.lineSeparator()
               + "Command: ");
     }
   }
